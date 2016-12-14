@@ -57,9 +57,23 @@ public class EnemySpawner : MonoBehaviour {
 				movingRight = !movingRight;
 			}
 		}
-		print (transform.position+"    "+xmax);
 
 		float newX = Mathf.Clamp (transform.position.x, xmin,xmax);
 		transform.position = new Vector3(newX,transform.position.y,transform.position.z);
+
+		if(AllMembersDead()){
+			Debug.Log ("Empty Formation");
+		}
+	}
+
+	bool AllMembersDead(){
+		
+		foreach (Transform childPositionGameObject in transform) {
+			if (childPositionGameObject.childCount > 0) {
+				print(childPositionGameObject.childCount);
+				return false;
+			}
+		}
+		return true;
 	}
 }

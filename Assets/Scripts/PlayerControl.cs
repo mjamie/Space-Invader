@@ -6,6 +6,7 @@ public class PlayerControl : MonoBehaviour {
 	public float speed;
 	float xmin;
 	float xmax;
+	float health = 200f;
 
 	public float padding = 1f;
 	public float laserSpeed = 3f;
@@ -14,7 +15,7 @@ public class PlayerControl : MonoBehaviour {
 
 	void Start () {
 	float distance = transform.position.z - Camera.main.transform.position.z;
-		laser.transform.SetParent (transform);
+	//	laser.transform.SetParent (transform);
 		Vector3 leftMost = Camera.main.ViewportToWorldPoint (new Vector3(0,0,distance));
 		Vector3 rightMost = Camera.main.ViewportToWorldPoint (new Vector3(1,0,distance));
 		xmin = leftMost.x + padding;
@@ -50,8 +51,23 @@ public class PlayerControl : MonoBehaviour {
 
 	void Fire(){
 		GameObject beam = Instantiate (laser,transform.position,Quaternion.identity) as GameObject;
-			beam.transform.position =  new Vector3(transform.position.x,transform.position.y+0.6f+0);
+			beam.transform.position =  new Vector3(transform.position.x,transform.position.y+1f+0);
 			beam.GetComponent<Rigidbody2D>().velocity = new Vector3 (0,laserSpeed,0);
 
 	}
+
+	void OnTriggerEnter2D(Collider2D collider){
+		Proectile missile = collider.gameObject.GetComponent<Proectile> ();
+
+		if (missile) {
+			
+				health -= missile.GetDamage ();
+				missile.Hit ();
+				if (health <= 0) {
+					Destroy (gameObject);
+				}
+
+		}
+	}
+
 }
