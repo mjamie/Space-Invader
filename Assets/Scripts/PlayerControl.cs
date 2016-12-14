@@ -13,6 +13,8 @@ public class PlayerControl : MonoBehaviour {
 	public GameObject laser;
 	public float firingRate = 2f;
 
+	public AudioClip shot;
+
 	void Start () {
 	float distance = transform.position.z - Camera.main.transform.position.z;
 	//	laser.transform.SetParent (transform);
@@ -38,7 +40,7 @@ public class PlayerControl : MonoBehaviour {
 			//this.transform.position += Vector3.left * speed * Time.deltaTime;
 		}
 
-		float newX = Mathf.Clamp (transform.position.x, xmin,xmax);
+		float newX = Mathf.Clamp (transform.position.x, xmin,xmax); // keeps the player in screen
 		transform.position = new Vector3(newX,transform.position.y,transform.position.z);
 
 		if(Input.GetKeyDown (KeyCode.Space)){
@@ -50,6 +52,7 @@ public class PlayerControl : MonoBehaviour {
 	}
 
 	void Fire(){
+		AudioSource.PlayClipAtPoint (shot,transform.position);
 		GameObject beam = Instantiate (laser,transform.position,Quaternion.identity) as GameObject;
 			beam.transform.position =  new Vector3(transform.position.x,transform.position.y+1f+0);
 			beam.GetComponent<Rigidbody2D>().velocity = new Vector3 (0,laserSpeed,0);
@@ -57,7 +60,7 @@ public class PlayerControl : MonoBehaviour {
 	}
 
 	void OnTriggerEnter2D(Collider2D collider){
-		Proectile missile = collider.gameObject.GetComponent<Proectile> ();
+		Proectile missile = collider.gameObject.GetComponent<Proectile> ();//method to use when object collides with this object.
 
 		if (missile) {
 			
