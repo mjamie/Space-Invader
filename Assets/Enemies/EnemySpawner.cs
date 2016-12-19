@@ -17,6 +17,9 @@ public class EnemySpawner : MonoBehaviour {
 	public float speed;
 	public float spawnDelay = 0.5f;
 
+	public int enemyNumbers = 0;
+	public int enemiesOnScreen = 0;
+
 		void Start () {
 		float distance = transform.position.z - Camera.main.transform.position.z;
 
@@ -28,25 +31,25 @@ public class EnemySpawner : MonoBehaviour {
 		Vector3 leftMost = Camera.main.ViewportToWorldPoint (new Vector3(0,0,distance));
 		xmin = leftMost.x + padding;
 
-		SpawnUntilFull ();
-	}
-
-	void SpawnEnemies () {
-		foreach (Transform child in transform) { //the transform attached to this object.
-			GameObject enemy = Instantiate (enemyPrefab, child.transform.position, Quaternion.identity) as GameObject;
-			enemy.transform.SetParent (child);
+		foreach (Transform childPositionGameObject in transform) {//tranfrom that is attached to this object.
+			enemyNumbers++;
 		}
+
+		SpawnUntilFull ();
 	}
 
 	void SpawnUntilFull () {
 		Transform freePosition = NextFreePosition ();
+
 		if(freePosition){
 			GameObject enemy = Instantiate (enemyPrefab, freePosition.position, Quaternion.identity) as GameObject;
 			enemy.transform.parent = freePosition;	
 		}
 		if(NextFreePosition ()){
 		Invoke ("SpawnUntilFull",spawnDelay);
+
 		}
+		enemiesOnScreen++;
 	}
 
 	public void OnDrawGizmos () {//Drawing of gizmos.(Better refernce to see the object on the scene)
@@ -54,8 +57,6 @@ public class EnemySpawner : MonoBehaviour {
 	}
 
 	void Update () {
-
-		//transform.position += Vector3.right * speed * Time.deltaTime;
 
 		if(movingRight){ //if true
 			transform.position += Vector3.right * speed * Time.deltaTime; //moving enemies right.
@@ -75,6 +76,8 @@ public class EnemySpawner : MonoBehaviour {
 		float newX = Mathf.Clamp (transform.position.x, xmin,xmax); //keeps the enemies in the screen
 		transform.position = new Vector3(newX,transform.position.y,transform.position.z);
 
+
+
 		if(AllMembersDead()){
 			SpawnUntilFull ();
 		}
@@ -93,7 +96,6 @@ public class EnemySpawner : MonoBehaviour {
 		
 		foreach (Transform childPositionGameObject in transform) {//tranform attached to this object.
 			if (childPositionGameObject.childCount > 0) { //looks at the number of childern the transform has.
-				print(childPositionGameObject.childCount);
 				return false;
 			}
 		}

@@ -54,8 +54,8 @@ public class PlayerControl : MonoBehaviour {
 	void Fire(){
 		AudioSource.PlayClipAtPoint (shot,transform.position);
 		GameObject beam = Instantiate (laser,transform.position,Quaternion.identity) as GameObject;
-			beam.transform.position =  new Vector3(transform.position.x,transform.position.y+1f+0);
-			beam.GetComponent<Rigidbody2D>().velocity = new Vector3 (0,laserSpeed,0);
+		beam.transform.position =  new Vector3(transform.position.x,transform.position.y+0f+0);
+		beam.GetComponent<Rigidbody2D>().velocity = new Vector3 (0,laserSpeed,0);
 
 	}
 
@@ -67,10 +67,16 @@ public class PlayerControl : MonoBehaviour {
 				health -= missile.GetDamage ();
 				missile.Hit ();
 				if (health <= 0) {
-					Destroy (gameObject);
+				Die ();
 				}
 
 		}
+	}
+
+	void Die () {
+		LevelManager man = Object.FindObjectOfType <LevelManager>();
+		man.LoadLevel ("Win Screen");
+		Destroy (gameObject);
 	}
 
 }
